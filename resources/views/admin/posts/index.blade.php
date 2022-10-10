@@ -3,7 +3,6 @@
 @section('content')
 
 
-
 <header class="d-flex justify-content-between align-items-center mb-4">
     <h2> I tuoi post </h2>
     <a href="{{ route('admin.posts.create') }}" class="btn btn-outline-success p-2">
@@ -28,6 +27,7 @@
     </thead>
     <tbody>
         @forelse($posts as $post)
+        <!-- @dump($post)) -->
         <tr>
             <th scope="row">{{ $post->id }}</th>
             <td>{{$post->title}}</td>

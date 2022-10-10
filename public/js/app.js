@@ -37288,6 +37288,24 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/admin/delete_confirmation.js":
+/*!***************************************************!*\
+  !*** ./resources/js/admin/delete_confirmation.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var deleteForms = document.querySelectorAll('.delete-form');
+deleteForms.forEach(function (form) {
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var hasConfirmed = confirm('Sicuro di volerlo eliminare?');
+    if (hasConfirmed) form.submit();
+  });
+});
+
+/***/ }),
+
 /***/ "./resources/js/admin/image_preview.js":
 /*!*********************************************!*\
   !*** ./resources/js/admin/image_preview.js ***!
@@ -37299,7 +37317,14 @@ var placeholder = "https://image.shutterstock.com/image-vector/ui-image-placehol
 var preview = document.getElementById('preview');
 var imageField = document.getElementById('image');
 imageField.addEventListener('input', function () {
-  preview.src = imageField.value || placeholder;
+  if (imageField.files && imageField.files[0]) {
+    var reader = new FileReader();
+    reader.readAsDataURL(imageField.files[0]);
+
+    reader.onload = function (event) {
+      preview.src = event.target.result;
+    };
+  } else preview.src = placeholder;
 });
 
 /***/ }),
@@ -37318,7 +37343,7 @@ imageField.addEventListener('input', function () {
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-__webpack_require__(/*! ./delete_confirmation */ "./resources/js/delete_confirmation.js");
+__webpack_require__(/*! ./admin/delete_confirmation */ "./resources/js/admin/delete_confirmation.js");
 
 __webpack_require__(/*! ./admin/image_preview */ "./resources/js/admin/image_preview.js");
 
@@ -37369,24 +37394,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/delete_confirmation.js":
-/*!*********************************************!*\
-  !*** ./resources/js/delete_confirmation.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var deleteForms = document.querySelectorAll('.delete-form');
-deleteForms.forEach(function (form) {
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    var hasConfirmed = confirm('Sicuro di volerlo eliminare?');
-    if (hasConfirmed) form.submit();
-  });
-});
-
-/***/ }),
-
 /***/ "./resources/sass/app.scss":
 /*!*********************************!*\
   !*** ./resources/sass/app.scss ***!
@@ -37405,8 +37412,8 @@ deleteForms.forEach(function (form) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-api\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-api\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-boolpress\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-boolpress\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

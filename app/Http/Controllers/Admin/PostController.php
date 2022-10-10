@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin;
 //importo modelli
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Category;
 use Illuminate\Validation\Rule;
 
 class PostController extends Controller
@@ -23,8 +23,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::orderBy('updated_at', 'DESC')->orderBy('created_at', 'DESC')->orderBy('title')->paginate(5);
-
-                $categories = Category::all();
+        $categories = Category::all();
         return view('admin.posts.index', compact('posts','categories'));
     }
 
@@ -71,21 +70,19 @@ class PostController extends Controller
         ]);
 
         $data = $request->all();
-        
-        $post = new Post();
-
-        $post->fill($data);
         //slug   
-        $post->slug = Str::slug($post->title , '-');
+        $data['slug'] = Str::slug($data['title'] , '-');
         //is_published
-        $post->is_published = array_key_exists('is_published', $data);
-
-        $post->user_id = Auth::id(); 
+        $data['is_published'] = array_key_exists('is_published', $data);
+        
+        $data['user_id'] = Auth::id(); 
         
         if(array_key_exists('image', $data)){
             $new_image_url = Storage::put('post_images', $data['image']);
-            $post->image = $new_image_url;
-        }
+            $data['image'] = $new_image_url;
+        };
+        $post = new Post();
+        $post->fill($data);
         $post->save();
         //se è stato spuntato almeno un checkbox, montalo sul db
         if(array_key_exists('tags', $data))
@@ -93,7 +90,8 @@ class PostController extends Controller
             $post->tags()->attach($data['tags']);
         }
         
-        return redirect()->route('admin.posts.show', $post->id)
+        
+        return redirect()->route('admin.posts.show', compact('post'))
         ->with('message', 'Il post è stato creato con successo!')
         ->with('type', 'success');
     }
@@ -134,8 +132,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $data = $request->all();
-
+        
         $request->validate([
             'title' => ['required','string','min:1','max:50', Rule::unique('posts')->ignore($post->id)],
             'content' => 'required|string',
@@ -153,24 +150,31 @@ class PostController extends Controller
             'tags.exists' => 'uno dei tag selezionati è non valido',
 
         ]);
+        
+        $data = $request->all();
 
-
-        //slug in maniera alternativa, non ho ancora post per cui devo prendere il title dalla request
-        $data['slug'] = Str::slug($request->title , '-'); // o anche( $data['title'], '-')
+        $data['slug'] = Str::slug($data['title'], '-'); 
         
         $post['is_published'] = array_key_exists('is_published', $data);        
         
+        
+        
+        if(array_key_exists('image', $data)){
+            if($post->image) Storage::delete($post->image);
+            $new_image_url = Storage::put('post_images', $data['image']);
+            $post->image = $new_image_url;
+        };
+        
         $post->update($data);
-
-       if(array_key_exists('tags', $data))
+    
+        if(array_key_exists('tags', $data))
         {
             $post->tags()->sync($data['tags']);
         } else{
             $post->tags()->detach();
-        }
-        
+        };
 
-        return redirect()->route('admin.posts.show', $post)
+        return redirect()->route('admin.posts.show', compact('post'))
         ->with('message', 'Il post è stato aggiornato correttamente')
         ->with('type', 'success');
     }
@@ -184,7 +188,9 @@ class PostController extends Controller
     public function destroy(Post $post )
     {
         //ulteriore controllo sul funzionamento di cascade
-        //if(count($post->tags)) $post->tags->detach();
+        if(count($post->tags)) $post->tags->detach();
+
+         if($post->image) Storage::delete($post->image);
 
         $post->delete();
 

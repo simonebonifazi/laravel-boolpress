@@ -34,13 +34,13 @@
             </div>
             <!-- image -->
             <div class="mb-3 col-10">
-                <label for="image" class="form-label">Immagine </label>
+                <label for="image" class="form-label">Immagine </label> <br>
                 <input class="@error('image') is-invalid @enderror" type="file" id="image" name="image">
             </div>
             <div class="mb-3 col-2">
                 <img class="img-fluid"
-                    src="{{ $post->image ?? 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg' }}"
-                    alt="preview" id="preview">
+                    src="{{ $post->image ? asset('storage/'.$post->image) : 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg' }}"
+                    alt="{{ $post->image ? $post->slug : 'placeholder'}}" id="preview">
                 <!-- to fix w/js -->
             </div>
             <!-- checkbox pubblicato -->

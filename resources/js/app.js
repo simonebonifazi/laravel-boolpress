@@ -5,6 +5,6 @@
  */
 
 require('./bootstrap');
-require('./delete_confirmation');
+require('./admin/delete_confirmation');
 require('./admin/image_preview');
-
+ 

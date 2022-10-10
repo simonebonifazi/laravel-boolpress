@@ -6953,7 +6953,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.loader-overlay[data-v-20e82f9a]{\r\n    top:0;\r\n    right:0;\r\n    left:0;\r\n    bottom:0;\r\n    position: fixed;\r\n    z-index: 10;\r\n    background-color: rgb(179, 177, 177);\r\n\r\n    display: flex;\r\n    align-items: center;\r\n    justify-content: center;\n}\n.spinner-border[data-v-20e82f9a]{\r\n    width: 175px;\r\n    height: 175px;\n}\r\n", ""]);
+exports.push([module.i, "\n.loader-overlay[data-v-20e82f9a]{\n    top:0;\n    right:0;\n    left:0;\n    bottom:0;\n    position: fixed;\n    z-index: 10;\n    background-color: rgb(179, 177, 177);\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n.spinner-border[data-v-20e82f9a]{\n    width: 175px;\n    height: 175px;\n}\n", ""]);
 
 // exports
 
@@ -54865,7 +54865,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-api\resources\js\front.js */"./resources/js/front.js");
+module.exports = __webpack_require__(/*! C:\Users\LENOVO\Desktop\laravel-boolpress\resources\js\front.js */"./resources/js/front.js");
 
 
 /***/ })

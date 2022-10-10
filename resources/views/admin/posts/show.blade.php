@@ -8,7 +8,7 @@
 <div class="clearfix">
     @if($post->image)
     <figure class="float-left mr-3">
-        <img src=" {{ $post->image }}" alt="{{ $post->slug }}">
+        <img class="img-fluid" width="150" src=" {{ asset('storage/'.$post->image) }}" alt="{{ $post->slug }}">
     </figure>
     @endif
     <p class="mb-5"> {{ $post->content }} </p>
@@ -24,7 +24,6 @@
     <div class="my-3">
         <strong> Tag: </strong>
         @forelse($post->tags as $tag)
-        <!-- gestire lo stile -->
         <span class="mx-2"> {{ $tag->label}} @if ($loop->last) . @else , @endif </span>
         @empty
         Nessun tag selezionato per questo post
