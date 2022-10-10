@@ -19,5 +19,5 @@ class Post extends Model
         return $this->belongsToMany('App\Models\Tag');
     }
 
-    protected $fillable = ['title','slug','content','category_id'];
+    protected $fillable = ['title','slug', 'image','content', 'is_published','category_id','user_id'];
 }

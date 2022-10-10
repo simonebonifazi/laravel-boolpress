@@ -6,10 +6,12 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\Category;
+use App\Mail\PostPublicationMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -51,7 +53,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        
         $request->validate([
             'title' => 'required|string|min:1|max:50|unique:posts',
             'content' => 'required|string',
@@ -75,6 +76,7 @@ class PostController extends Controller
         //is_published
         $data['is_published'] = array_key_exists('is_published', $data);
         
+        
         $data['user_id'] = Auth::id(); 
         
         if(array_key_exists('image', $data)){
@@ -89,7 +91,18 @@ class PostController extends Controller
         {
             $post->tags()->attach($data['tags']);
         }
-        
+
+        //! mails
+         if($post->is_published){
+            $mail = new PostPublicationMail($post);
+            $user = Auth::user()->email;
+            Mail::to($user)->send($mail);
+        }
+        // if($post->is_published){
+        //     $mail = new PostPublicationMail($post);
+        //     $user_email = Auth::user()->email;
+        //     Mail::to($user_email)->send($mail);  
+        // }
         
         return redirect()->route('admin.posts.show', compact('post'))
         ->with('message', 'Il post è stato creato con successo!')
