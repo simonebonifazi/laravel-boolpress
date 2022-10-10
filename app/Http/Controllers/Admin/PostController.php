@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Category;
 use Illuminate\Validation\Rule;
 
@@ -55,7 +56,7 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|min:1|max:50|unique:posts',
             'content' => 'required|string',
-            'image' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|exists:tags,id',
         ],[
@@ -64,8 +65,11 @@ class PostController extends Controller
             'title.max' => 'Attenzione,il titolo non può avere più di 50 caratteri. Hai già pensato di mettere le informazioni nel contenuto?',
             'title.min' => 'Attenzione, ci dev\'essere un titolo per procedere' ,
             'title.unique' => 'Attenzione, il titolo scelto è già associato ad un altro post',
+            'image.image' => 'Il file scelto non è di tipo immagine',
+            'image.mimes' => 'Sono ammesse solo immagini in formato .jpeg e .png',
             'tags.exists' => 'uno dei tag selezionati è non valido',
         ]);
+
         $data = $request->all();
         
         $post = new Post();
@@ -77,7 +81,11 @@ class PostController extends Controller
         $post->is_published = array_key_exists('is_published', $data);
 
         $post->user_id = Auth::id(); 
-            
+        
+        if(array_key_exists('image', $data)){
+            $new_image_url = Storage::put('post_images', $data['image']);
+            $post->image = $new_image_url;
+        }
         $post->save();
         //se è stato spuntato almeno un checkbox, montalo sul db
         if(array_key_exists('tags', $data))
@@ -131,7 +139,7 @@ class PostController extends Controller
         $request->validate([
             'title' => ['required','string','min:1','max:50', Rule::unique('posts')->ignore($post->id)],
             'content' => 'required|string',
-            'image' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,png',
             'category_id' => 'nullable|exists:categories,id',
             'tags' => 'nullable|exists:tags,id',
         ],[
@@ -140,6 +148,8 @@ class PostController extends Controller
             'title.max' => 'Attenzione,il titolo non può avere più di 50 caratteri. Hai già pensato di mettere le informazioni nel contenuto?',
             'title.min' => 'Attenzione, ci dev\'essere un titolo per procedere' ,
             'title.unique' => 'Attenzione, il titolo scelto è già associato ad un altro post',
+            'image.image' => 'Il file scelto non è di tipo immagine',
+            'image.mimes' => 'Sono ammesse solo immagini in formato .jpeg e .png',
             'tags.exists' => 'uno dei tag selezionati è non valido',
 
         ]);
