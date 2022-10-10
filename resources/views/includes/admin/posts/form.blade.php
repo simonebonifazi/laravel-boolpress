@@ -1,8 +1,8 @@
 @if($post->exists)
-<form action="{{ route('admin.posts.update' , $post) }}" method="POST">
+<form action="{{ route('admin.posts.update' , $post) }}" enctype="multipart/form-data" method="POST">
     @method('PUT')
     @else
-    <form action="{{ route('admin.posts.store') }}" method="POST">
+    <form action="{{ route('admin.posts.store') }}" enctype="multipart/form-data" method="POST">
         @endif
 
         @csrf
@@ -35,8 +35,7 @@
             <!-- image -->
             <div class="mb-3 col-10">
                 <label for="image" class="form-label">Immagine </label>
-                <input class="form-control @error('image') is-invalid @enderror" type="url" id="image" name="image"
-                    placeholder="Url del post..." value=" {{ old('image', $post->image) }}">
+                <input class="@error('image') is-invalid @enderror" type="file" id="image" name="image">
             </div>
             <div class="mb-3 col-2">
                 <img class="img-fluid"
